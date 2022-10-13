@@ -36,7 +36,7 @@ namespace JupiterBachLabelPrinter
 ^CF0,80
 ^FO50,190^FD<<Material>>^FS
 ^CF0,200
-^FO850,290,1^FD<<Item>>^FS
+^FO100,290^FD<<Item>>^FS
 ^XZ";
 
         public ObservableCollection<MasterItem> MasterItems { get; set; }
@@ -59,7 +59,7 @@ namespace JupiterBachLabelPrinter
             }
         }
 
-        public int PrintQuantity { get; set; } = 0;
+        public int PrintQuantity { get; set; } = 4;
         public string PrinterIp { get; set; } = "172.25.194.77";
 
         public MainWindow()
