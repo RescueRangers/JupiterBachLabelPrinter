@@ -103,7 +103,7 @@ namespace JupiterBachLabelPrinter
             tcpClient.Connect(PrinterIp, 9100);
             using (var writer = new StreamWriter(tcpClient.GetStream()))
             {
-                foreach (var item in SelectedMaterial.Items)
+                foreach (var item in SelectedMaterial.Items.Reverse())
                 {
                     var zplData = _zpl.Replace("<<Master>>", SelectedMasterItem.Name);
                     zplData = zplData.Replace("<<Quantity>>", $"{PrintQuantity}");
