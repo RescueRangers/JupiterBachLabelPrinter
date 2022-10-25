@@ -11,6 +11,7 @@ namespace JupiterBachLabelPrinter.Model
     {
         public string Name { get; set; }
         public ObservableCollection<Item> Items { get; set; }
+        public bool ComplexMaterial { get; set; } = false;
 
         public override string ToString()
         {

@@ -103,16 +103,33 @@ namespace JupiterBachLabelPrinter
             tcpClient.Connect(PrinterIp, 9100);
             using (var writer = new StreamWriter(tcpClient.GetStream()))
             {
-                foreach (var item in SelectedMaterial.Items.Reverse())
+                if (SelectedMaterial.ComplexMaterial)
                 {
-                    var zplData = _zpl.Replace("<<Master>>", SelectedMasterItem.Name);
-                    zplData = zplData.Replace("<<Quantity>>", $"{PrintQuantity}");
-                    zplData = zplData.Replace("<<Number>>", SelectedMasterItem.SetNumber);
-                    zplData = zplData.Replace("<<Material>>", SelectedMaterial.Name);
-                    zplData = zplData.Replace("<<Item>>", item.Name);
-                
-                    writer.Write(zplData);
-                    writer.Flush();
+                    foreach (var item in SelectedMaterial.Items.Reverse())
+                    {
+                        var zplData = _zpl.Replace("<<Master>>", item.MasterItem);
+                        zplData = zplData.Replace("<<Quantity>>", $"{PrintQuantity}");
+                        zplData = zplData.Replace("<<Number>>", item.SetNumber);
+                        zplData = zplData.Replace("<<Material>>", SelectedMaterial.Name);
+                        zplData = zplData.Replace("<<Item>>", item.Name);
+
+                        writer.Write(zplData);
+                        writer.Flush();
+                    }
+                }
+                else
+                {
+                    foreach (var item in SelectedMaterial.Items.Reverse())
+                    {
+                        var zplData = _zpl.Replace("<<Master>>", SelectedMasterItem.Name);
+                        zplData = zplData.Replace("<<Quantity>>", $"{PrintQuantity}");
+                        zplData = zplData.Replace("<<Number>>", SelectedMasterItem.SetNumber);
+                        zplData = zplData.Replace("<<Material>>", SelectedMaterial.Name);
+                        zplData = zplData.Replace("<<Item>>", item.Name);
+
+                        writer.Write(zplData);
+                        writer.Flush();
+                    }
                 }
             }
         }
