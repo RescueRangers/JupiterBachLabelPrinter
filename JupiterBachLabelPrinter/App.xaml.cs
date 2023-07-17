@@ -4,6 +4,10 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Windows;
+using JupiterBachLabelPrinter.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using Serilog.Formatting.Compact;
 
 namespace JupiterBachLabelPrinter
 {
@@ -12,5 +16,46 @@ namespace JupiterBachLabelPrinter
     /// </summary>
     public partial class App : Application
     {
-    }
+		private ServiceProvider serviceProvider;
+
+        public App()
+        {
+			ServiceCollection services = new ServiceCollection();
+			ConfigureServices(services);
+			serviceProvider = services.BuildServiceProvider();
+		}
+
+		private void ConfigureServices(ServiceCollection services)
+		{
+			services
+#if DEBUG
+			.AddLogging(b =>
+			{
+				var logger = new LoggerConfiguration()
+				.WriteTo.Debug(Serilog.Events.LogEventLevel.Verbose)
+				.WriteTo.File(new CompactJsonFormatter(), @".\logs\log.txt", Serilog.Events.LogEventLevel.Verbose, rollingInterval: RollingInterval.Day)
+				.CreateLogger();
+
+				b.AddSerilog(logger);
+			})
+#else
+                .AddLogging(b =>
+                {
+                    var logger = new LoggerConfiguration()
+                    .WriteTo.File(new CompactJsonFormatter(), @".\logs\log.txt", Serilog.Events.LogEventLevel.Error, rollingInterval: RollingInterval.Day)
+                    .CreateLogger();
+
+                    b.AddSerilog(logger);
+                })
+#endif
+			.AddSingleton<MainWindowViewModel>()
+			.AddTransient<MainWindow>();
+		}
+
+		private void Application_Startup(object sender, StartupEventArgs e)
+		{
+			var window = serviceProvider.GetRequiredService<MainWindow>();
+			window.Show();
+		}
+	}
 }

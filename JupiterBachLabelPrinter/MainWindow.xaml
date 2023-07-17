@@ -56,22 +56,22 @@
                 Margin="10"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
-                Text="{Binding PrintQuantity}" 
-                PreviewKeyDown="TextBox_PreviewKeyDown"/>
+                PreviewKeyDown="TextBox_PreviewKeyDown"
+                Text="{Binding PrintQuantity}" />
             <TextBox
                 Name="IpTextBox"
                 Width="180"
                 Margin="10"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
-                Text="{Binding PrinterIp}"
-                PreviewKeyDown="IpTextBox_PreviewKeyDown"/>
+                PreviewKeyDown="IpTextBox_PreviewKeyDown"
+                Text="{Binding PrinterIp}" />
         </StackPanel>
         <DataGrid Grid.Row="2" ItemsSource="{Binding SelectedMaterial.Items}" />
         <Button
             Grid.Row="3"
             Margin="10"
-            Click="Button_Click"
+            Command="{Binding PrintLabelsCommand}"
             Content="Print"
             FontSize="16"
             FontWeight="Bold" />
