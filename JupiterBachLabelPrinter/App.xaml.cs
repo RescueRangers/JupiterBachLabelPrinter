@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Windows;
+using JupiterBachLabelPrinter.Services;
 using JupiterBachLabelPrinter.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -49,6 +50,7 @@ namespace JupiterBachLabelPrinter
                 })
 #endif
 			.AddSingleton<MainWindowViewModel>()
+			.AddSingleton<ILabelAccessService, CsvLabelsAccessService>()
 			.AddTransient<MainWindow>();
 		}
 

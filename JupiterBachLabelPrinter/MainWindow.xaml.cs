@@ -1,19 +1,31 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using JupiterBachLabelPrinter.Messages;
 using JupiterBachLabelPrinter.ViewModels;
 
 namespace JupiterBachLabelPrinter
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
+	public partial class MainWindow : Window
     {
         public MainWindow( MainWindowViewModel viewModel)
         {
-            InitializeComponent();
             DataContext = viewModel;
+
+            WeakReferenceMessenger.Default.Register<ErrorMessage>(this, (r, m) => 
+            {
+                ShowErrorMessage(m.Value);
+            });
+            InitializeComponent();
         }
+
+        private void ShowErrorMessage(string message)
+        {
+			MessageBox.Show(message, "Błąd programu", MessageBoxButton.OK, MessageBoxImage.Error);
+		}
 
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -37,5 +49,10 @@ namespace JupiterBachLabelPrinter
                 e.Handled = true;
             }
         }
-    }
+
+		private void Window_Initialized(object sender, System.EventArgs e)
+		{
+			WeakReferenceMessenger.Default.Send(new WindowLoadedMessage());
+		}
+	}
 }

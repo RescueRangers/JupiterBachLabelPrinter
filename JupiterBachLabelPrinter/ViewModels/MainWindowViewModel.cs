@@ -6,10 +6,15 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using JupiterBachLabelPrinter.Messages;
 using JupiterBachLabelPrinter.Model;
+using JupiterBachLabelPrinter.Services;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace JupiterBachLabelPrinter.ViewModels
@@ -32,14 +37,26 @@ namespace JupiterBachLabelPrinter.ViewModels
 		private int printQuantity = 4;
 		private string printerIp = "172.25.194.77";
 
-		public ObservableCollection<MasterItem> MasterItems { get; set; }
+		private ILabelAccessService _labelAccessService;
+		private ILogger<MainWindowViewModel> _logger;
+		private int currentProgress;
+		private bool progressBarVisibility = true;
+		private ObservableCollection<MasterItem> masterItems;
+
+		public ObservableCollection<MasterItem> MasterItems
+		{
+			get => masterItems;
+			set
+			{
+				SetProperty(ref masterItems, value);
+			}
+		}
 		public MasterItem SelectedMasterItem
 		{
 			get => selectedMasterItem;
 			set
 			{
-				selectedMasterItem = value;
-				OnPropertyChanged(nameof(SelectedMasterItem));
+				SetProperty(ref selectedMasterItem, value);
 			}
 		}
 
@@ -57,7 +74,7 @@ namespace JupiterBachLabelPrinter.ViewModels
 
 		public string PrinterIp
 		{
-			get => printerIp; 
+			get => printerIp;
 			set
 			{
 				if (SetProperty(ref printerIp, value))
@@ -66,6 +83,25 @@ namespace JupiterBachLabelPrinter.ViewModels
 				}
 			}
 		}
+
+		public int CurrentProgress
+		{
+			get => currentProgress;
+			set
+			{
+				SetProperty(ref currentProgress, value);
+			}
+		}
+
+		public bool ProgressBarVisibility
+		{
+			get => progressBarVisibility;
+			set
+			{
+				SetProperty(ref progressBarVisibility, value);
+			}
+		}
+
 		public IRelayCommand PrintLabelsCommand { get; set; }
 
 		public int PrintQuantity
@@ -80,24 +116,21 @@ namespace JupiterBachLabelPrinter.ViewModels
 			}
 		}
 
-		public MainWindowViewModel()
+		public MainWindowViewModel(ILabelAccessService labelAccessService, ILogger<MainWindowViewModel> logger)
 		{
 			PrintLabelsCommand = new RelayCommand(PrintLabels, CanPrintLabels);
-			CreateItems();
+			_labelAccessService = labelAccessService;
+			_logger = logger;
+
+			WeakReferenceMessenger.Default.Register<WindowLoadedMessage>(this, (r, m) =>
+			{
+				MasterItems = new ObservableCollection<MasterItem>(_labelAccessService.GetAllLabels());
+			});
 		}
 
 		private bool CanPrintLabels()
 		{
 			return SelectedMaterial != null && PrintQuantity >= 1 && IPAddress.TryParse(PrinterIp, out _);
-		}
-
-		private void CreateItems()
-		{
-			using (var reader = new StreamReader("Jupiter-Bach-Items.json"))
-			{
-				var root = JsonConvert.DeserializeObject<Root>(reader.ReadToEnd());
-				MasterItems = new ObservableCollection<MasterItem>(root.MasterItems);
-			}
 		}
 
 		private void PrintLabels()
