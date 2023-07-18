@@ -25,7 +25,7 @@ namespace JupiterBachLabelPrinter.ViewModels
 		private Material selectedMaterial;
 
 		private int printQuantity = 4;
-		private string printerIp = "172.25.194.77";
+		private string printerIp;
 
 		private ILabelAccessService _labelAccessService;
 		private ILabelPrintService _labelPrintService;
@@ -71,6 +71,8 @@ namespace JupiterBachLabelPrinter.ViewModels
 				if (SetProperty(ref printerIp, value))
 				{
 					PrintLabelsCommand.NotifyCanExecuteChanged();
+					Properties.Settings.Default.DefaultPrinterIP = value;
+					Properties.Settings.Default.Save();
 				}
 			}
 		}
@@ -112,6 +114,8 @@ namespace JupiterBachLabelPrinter.ViewModels
 			PrintLabelsCommand = new RelayCommand(PrintLabels, CanPrintLabels);
 			_labelAccessService = labelAccessService;
 			_logger = logger;
+
+			PrinterIp = Properties.Settings.Default.DefaultPrinterIP;
 
 			WeakReferenceMessenger.Default.Register<WindowLoadedMessage>(this, (r, m) =>
 			{

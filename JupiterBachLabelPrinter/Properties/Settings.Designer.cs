@@ -22,5 +22,17 @@ namespace JupiterBachLabelPrinter.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("172.25.194.77")]
+        public string DefaultPrinterIP {
+            get {
+                return ((string)(this["DefaultPrinterIP"]));
+            }
+            set {
+                this["DefaultPrinterIP"] = value;
+            }
+        }
     }
 }
