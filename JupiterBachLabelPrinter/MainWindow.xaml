@@ -46,6 +46,9 @@
                 Width="180"
                 Margin="10"
                 VerticalContentAlignment="Center"
+                IsEditable="True"
+                IsTextSearchEnabled="True"
+                IsTextSearchCaseSensitive="False"
                 ItemsSource="{Binding MasterItems, Mode=OneWay}"
                 SelectedItem="{Binding SelectedMasterItem, Mode=TwoWay}" />
             <ComboBox

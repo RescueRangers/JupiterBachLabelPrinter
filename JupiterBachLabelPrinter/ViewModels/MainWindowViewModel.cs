@@ -23,21 +23,12 @@ namespace JupiterBachLabelPrinter.ViewModels
 	{
 		private MasterItem selectedMasterItem;
 		private Material selectedMaterial;
-		private readonly string _zpl = @"^XA
-^PQ<<Quantity>>
-^CF0,80
-^FO50,50^FD<<Master>>^FS
-^CF0,60
-^FO1150,50,1^FD<<Number>>^FS
-^CF0,80
-^FO50,190^FD<<Material>>^FS
-^CF0,200
-^FO100,290^FD<<Item>>^FS
-^XZ";
+
 		private int printQuantity = 4;
 		private string printerIp = "172.25.194.77";
 
 		private ILabelAccessService _labelAccessService;
+		private ILabelPrintService _labelPrintService;
 		private ILogger<MainWindowViewModel> _logger;
 		private int currentProgress;
 		private bool progressBarVisibility = true;
@@ -116,7 +107,7 @@ namespace JupiterBachLabelPrinter.ViewModels
 			}
 		}
 
-		public MainWindowViewModel(ILabelAccessService labelAccessService, ILogger<MainWindowViewModel> logger)
+		public MainWindowViewModel(ILabelAccessService labelAccessService, ILogger<MainWindowViewModel> logger, ILabelPrintService labelPrintService)
 		{
 			PrintLabelsCommand = new RelayCommand(PrintLabels, CanPrintLabels);
 			_labelAccessService = labelAccessService;
@@ -126,49 +117,17 @@ namespace JupiterBachLabelPrinter.ViewModels
 			{
 				MasterItems = new ObservableCollection<MasterItem>(_labelAccessService.GetAllLabels());
 			});
+			_labelPrintService = labelPrintService;
+		}
+
+		private void PrintLabels()
+		{
+			_labelPrintService.PrintLabels(SelectedMaterial, SelectedMasterItem.SetNumber, PrintQuantity, PrinterIp);
 		}
 
 		private bool CanPrintLabels()
 		{
 			return SelectedMaterial != null && PrintQuantity >= 1 && IPAddress.TryParse(PrinterIp, out _);
 		}
-
-		private void PrintLabels()
-		{
-			var tcpClient = new System.Net.Sockets.TcpClient();
-			tcpClient.Connect(PrinterIp, 9100);
-			using (var writer = new StreamWriter(tcpClient.GetStream()))
-			{
-				if (SelectedMaterial.ComplexMaterial)
-				{
-					foreach (var item in SelectedMaterial.Items.Reverse())
-					{
-						var zplData = _zpl.Replace("<<Master>>", item.MasterItem);
-						zplData = zplData.Replace("<<Quantity>>", $"{PrintQuantity}");
-						zplData = zplData.Replace("<<Number>>", item.SetNumber);
-						zplData = zplData.Replace("<<Material>>", SelectedMaterial.Name);
-						zplData = zplData.Replace("<<Item>>", item.Name);
-
-						writer.Write(zplData);
-						writer.Flush();
-					}
-				}
-				else
-				{
-					foreach (var item in SelectedMaterial.Items.Reverse())
-					{
-						var zplData = _zpl.Replace("<<Master>>", SelectedMasterItem.Name);
-						zplData = zplData.Replace("<<Quantity>>", $"{PrintQuantity}");
-						zplData = zplData.Replace("<<Number>>", SelectedMasterItem.SetNumber);
-						zplData = zplData.Replace("<<Material>>", SelectedMaterial.Name);
-						zplData = zplData.Replace("<<Item>>", item.Name);
-
-						writer.Write(zplData);
-						writer.Flush();
-					}
-				}
-			}
-		}
-
 	}
 }

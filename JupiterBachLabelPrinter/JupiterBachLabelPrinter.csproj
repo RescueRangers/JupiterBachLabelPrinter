@@ -137,7 +137,9 @@
     <Compile Include="Model\CsvLabelModel.cs" />
     <Compile Include="Services\CsvLabelsAccessService.cs" />
     <Compile Include="Services\ILabelAccessService.cs" />
+    <Compile Include="Services\ILabelPrintService.cs" />
     <Compile Include="Services\JsonLabelsAccessService.cs" />
+    <Compile Include="Services\LabelPrintService.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

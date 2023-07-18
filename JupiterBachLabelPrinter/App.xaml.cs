@@ -51,6 +51,7 @@ namespace JupiterBachLabelPrinter
 #endif
 			.AddSingleton<MainWindowViewModel>()
 			.AddSingleton<ILabelAccessService, CsvLabelsAccessService>()
+			.AddSingleton<ILabelPrintService, LabelPrintService>()
 			.AddTransient<MainWindow>();
 		}
 
