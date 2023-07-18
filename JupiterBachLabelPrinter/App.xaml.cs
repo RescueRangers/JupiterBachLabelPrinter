@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using JupiterBachLabelPrinter.Services;
 using JupiterBachLabelPrinter.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,15 +7,15 @@ using Serilog.Formatting.Compact;
 
 namespace JupiterBachLabelPrinter
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
-    {
+	/// <summary>
+	/// Interaction logic for App.xaml
+	/// </summary>
+	public partial class App : Application
+	{
 		private ServiceProvider serviceProvider;
 
-        public App()
-        {
+		public App()
+		{
 			ServiceCollection services = new ServiceCollection();
 			ConfigureServices(services);
 			serviceProvider = services.BuildServiceProvider();
@@ -40,14 +35,14 @@ namespace JupiterBachLabelPrinter
 				b.AddSerilog(logger);
 			})
 #else
-                .AddLogging(b =>
-                {
-                    var logger = new LoggerConfiguration()
-                    .WriteTo.File(new CompactJsonFormatter(), @".\logs\log.txt", Serilog.Events.LogEventLevel.Error, rollingInterval: RollingInterval.Day)
-                    .CreateLogger();
+				.AddLogging(b =>
+				{
+					var logger = new LoggerConfiguration()
+					.WriteTo.File(new CompactJsonFormatter(), @".\logs\log.txt", Serilog.Events.LogEventLevel.Error, rollingInterval: RollingInterval.Day)
+					.CreateLogger();
 
-                    b.AddSerilog(logger);
-                })
+					b.AddSerilog(logger);
+				})
 #endif
 			.AddSingleton<MainWindowViewModel>()
 			.AddSingleton<ILabelAccessService, CsvLabelsAccessService>()

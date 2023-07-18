@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
-using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -15,7 +7,6 @@ using JupiterBachLabelPrinter.Messages;
 using JupiterBachLabelPrinter.Model;
 using JupiterBachLabelPrinter.Services;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace JupiterBachLabelPrinter.ViewModels
 {
@@ -30,8 +21,6 @@ namespace JupiterBachLabelPrinter.ViewModels
 		private ILabelAccessService _labelAccessService;
 		private ILabelPrintService _labelPrintService;
 		private ILogger<MainWindowViewModel> _logger;
-		private int currentProgress;
-		private bool progressBarVisibility = true;
 		private ObservableCollection<MasterItem> masterItems;
 
 		public ObservableCollection<MasterItem> MasterItems
@@ -74,24 +63,6 @@ namespace JupiterBachLabelPrinter.ViewModels
 					Properties.Settings.Default.DefaultPrinterIP = value;
 					Properties.Settings.Default.Save();
 				}
-			}
-		}
-
-		public int CurrentProgress
-		{
-			get => currentProgress;
-			set
-			{
-				SetProperty(ref currentProgress, value);
-			}
-		}
-
-		public bool ProgressBarVisibility
-		{
-			get => progressBarVisibility;
-			set
-			{
-				SetProperty(ref progressBarVisibility, value);
 			}
 		}
 

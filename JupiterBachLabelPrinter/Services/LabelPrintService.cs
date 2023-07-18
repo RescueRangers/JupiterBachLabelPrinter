@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
 using JupiterBachLabelPrinter.Messages;
 using JupiterBachLabelPrinter.Model;
@@ -54,7 +51,7 @@ namespace JupiterBachLabelPrinter.Services
 				logger.LogError(ex.Message);
 				WeakReferenceMessenger.Default.Send<ErrorMessage>(new ErrorMessage(ex.Message));
 			}
-			
+
 		}
 
 		private void PrintSimpleLabels(Material material, string setNumber, int printQuantity, StreamWriter writer)

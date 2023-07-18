@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -40,7 +38,7 @@ namespace JupiterBachLabelPrinter.Services
 			{
 				try
 				{
-				
+
 					var separatorIndex = file.Name.LastIndexOf('-');
 					var masterItemName = file.Name.Substring(0, separatorIndex).Trim();
 					var masterItemNumber = file.Name.Substring(separatorIndex + 1, file.Name.Length - separatorIndex - 5).Trim();
@@ -64,7 +62,7 @@ namespace JupiterBachLabelPrinter.Services
 							foreach (var material in materials)
 							{
 								if (string.IsNullOrWhiteSpace(material.Key)) continue;
-									
+
 								var items = material.ToList().Select(g => new Item { MasterItem = g.MasterItemName, SetNumber = g.MasterItemSetNumber, Name = g.MaterialItemName });
 								var mat = new Material { ComplexMaterial = true, Name = material.Key, Items = new System.Collections.ObjectModel.ObservableCollection<Item>(items) };
 								masterItem.Materials.Add(mat);
@@ -83,8 +81,8 @@ Błędny plik: {file.Name}.";
 					WeakReferenceMessenger.Default.Send(new ErrorMessage(message));
 				}
 			}
-			
-			
+
+
 			return masterItems;
 		}
 	}
